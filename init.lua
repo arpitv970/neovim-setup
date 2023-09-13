@@ -62,9 +62,19 @@ vim.opt.rtp:prepend(lazypath)
 --
 --  You can also configure plugins after the setup call,
 --    as they will be available in your neovim runtime.
+
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
 
+  -- add LazyVim and import its plugins
+  { "LazyVim/LazyVim",                                import = "lazyvim.plugins" },
+  -- import extra modules here
+  { import = "lazyvim.plugins.extras.lang.typescript" },
+  { import = "lazyvim.plugins.extras.lang.json" },
+  { import = "lazyvim.plugins.extras.ui.mini-animate" },
+
+  -- import/override with your plugins
+  { import = "plugins" },
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
@@ -84,7 +94,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
+      { 'j-hui/fidget.nvim',       tag = 'legacy', opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -119,7 +129,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',          opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -133,31 +143,40 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
       on_attach = function(bufnr)
-        vim.keymap.set('n', '<leader>gp', require('gitsigns').prev_hunk, { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
+        vim.keymap.set('n', '<leader>gp', require('gitsigns').prev_hunk,
+          { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
         vim.keymap.set('n', '<leader>gn', require('gitsigns').next_hunk, { buffer = bufnr, desc = '[G]o to [N]ext Hunk' })
         vim.keymap.set('n', '<leader>ph', require('gitsigns').preview_hunk, { buffer = bufnr, desc = '[P]review [H]unk' })
       end,
     },
   },
 
- {
-    -- Theme inspired by Atom
-   'navarasu/onedark.nvim',
-   priority = 1000,
-   config = function()
-     vim.cmd.colorscheme 'onedark'
-    end,
-  },
-
   -- {
-  --   'folke/tokyonight.nvim',
-  --   lazy = false,
+  --   -- Theme inspired by Atom
+  --   'navarasu/onedark.nvim',
   --   priority = 1000,
-  --   opts = {},
-  --   config = function ()
-  --     vim.cmd[[colorscheme tokyonight]]
+  --   config = function()
+  --     vim.cmd.colorscheme 'onedark'
   --   end,
   -- },
+
+  {
+    'folke/tokyonight.nvim',
+    lazy = false,
+    priority = 1000,
+    opts = {
+      style = "night",
+      transparent = true,
+      terminal_colors = true,
+      styles = {
+        sidebars = "dark",
+        floats = "dark",
+      },
+    },
+    config = function()
+      vim.cmd [[colorscheme tokyonight-night]]
+    end,
+  },
 
   {
     -- Set lualine as statusline
@@ -165,12 +184,24 @@ require('lazy').setup({
     -- See `:help lualine.txt`
     opts = {
       options = {
-        icons_enabled = false,
-        -- theme = 'tokyonight',
-        theme = 'onedark',
+        icons_enabled = true,
+        theme = 'auto',
+        -- theme = 'onedark',
         component_separators = '|',
         section_separators = '',
       },
+      sections = {
+    lualine_a = {
+      { 'mode', separator = { left = '', right = '' }, right_padding = 2 },
+    },
+    lualine_b = { 'filename', 'branch' },
+    lualine_c = { 'fileformat' },
+    lualine_x = {},
+    lualine_y = { 'filetype', 'progress' },
+    lualine_z = {
+      { 'location', separator = { left = '', right = '' }, left_padding = 2 },
+    },
+  },
     },
   },
 
@@ -186,7 +217,7 @@ require('lazy').setup({
   },
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  { 'numToStr/Comment.nvim',         opts = {} },
 
   -- Fuzzy Finder (files, lsp, etc)
   { 'nvim-telescope/telescope.nvim', branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' } },
@@ -228,6 +259,15 @@ require('lazy').setup({
   -- { import = 'custom.plugins' },
 }, {})
 
+-- require('tokyonight').setup({
+--   -- style = "night",
+--   -- light_style = "night",
+--   transparent = true,
+--   styles = {
+--     sidebars = "transparent",
+--   }
+-- })
+
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
@@ -237,6 +277,7 @@ vim.o.hlsearch = false
 
 -- Make line numbers default
 vim.wo.number = true
+vim.wo.relativenumber = false
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
@@ -328,7 +369,7 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim' },
+  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'javascript', 'tsx', 'typescript', 'vimdoc', 'vim' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = true,
