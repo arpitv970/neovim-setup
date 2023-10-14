@@ -102,6 +102,23 @@ require('lazy').setup({
   },
 
   {
+    'nvim-neo-tree/neo-tree.nvim',
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+      "MunifTanjim/nui.nvim",
+    },
+    opts = {
+      filesystem = {
+        filtered_items = {
+          visible = true,
+          hide_dotfiles = false,
+        },
+      }
+    }
+  },
+
+  {
     -- Markdown Preview
     'iamcco/markdown-preview.nvim',
     ft = 'markdown',
@@ -169,8 +186,8 @@ require('lazy').setup({
       transparent = true,
       terminal_colors = true,
       styles = {
-        sidebars = "dark",
-        floats = "dark",
+        sidebars = "transparent",
+        floats = "transparent",
       },
     },
     config = function()
@@ -191,17 +208,17 @@ require('lazy').setup({
         section_separators = '',
       },
       sections = {
-    lualine_a = {
-      { 'mode', separator = { left = '', right = '' }, right_padding = 2 },
-    },
-    lualine_b = { 'filename', 'branch' },
-    lualine_c = { 'fileformat' },
-    lualine_x = {},
-    lualine_y = { 'filetype', 'progress' },
-    lualine_z = {
-      { 'location', separator = { left = '', right = '' }, left_padding = 2 },
-    },
-  },
+        lualine_a = {
+          { 'mode', separator = { left = '', right = '' }, right_padding = 2 },
+        },
+        lualine_b = { 'filename', 'branch' },
+        lualine_c = { 'fileformat' },
+        lualine_x = {},
+        lualine_y = { 'filetype', 'progress' },
+        lualine_z = {
+          { 'location', separator = { left = '', right = '' }, left_padding = 2 },
+        },
+      },
     },
   },
 
